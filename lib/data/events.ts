@@ -21,6 +21,7 @@ export type GuildEvent = {
   maxSlots: number;
   status: EventStatus;
   tier: string;
+  mainCount: number;
   registrations: EventRegistration[];
 };
 
@@ -29,6 +30,12 @@ export type CreateEventInput = {
   dateTime: string;
   description: string;
   maxSlots: number;
+};
+
+export type EventWithSquads = {
+  event: GuildEvent;
+  mainSquad: EventRegistration[];
+  reserveSquad: EventRegistration[];
 };
 
 const eventsStore: GuildEvent[] = [
@@ -41,6 +48,7 @@ const eventsStore: GuildEvent[] = [
     maxSlots: 3,
     status: "Набір відкрито",
     tier: "Рейд · Міфічний",
+    mainCount: 2,
     registrations: [
       {
         id: "r1",
@@ -77,6 +85,7 @@ const eventsStore: GuildEvent[] = [
     maxSlots: 10,
     status: "Набір відкрито",
     tier: "Рейд · Героїчний",
+    mainCount: 2,
     registrations: [
       {
         id: "r4",
@@ -104,6 +113,7 @@ const eventsStore: GuildEvent[] = [
     maxSlots: 10,
     status: "Завершено",
     tier: "Рейд · Міфічний",
+    mainCount: 1,
     registrations: [
       {
         id: "r6",
@@ -117,8 +127,14 @@ const eventsStore: GuildEvent[] = [
   },
 ];
 
+function syncMainCount(ev: GuildEvent): GuildEvent {
+  const count = ev.registrations.filter((r) => r.status === "Основний склад").length;
+  ev.mainCount = count;
+  return ev;
+}
+
 export async function listEvents(statusFilter?: string): Promise<GuildEvent[]> {
-  const all = await withMockMode(eventsStore);
+  const all = (await withMockMode(eventsStore)).map(syncMainCount);
   if (!statusFilter || statusFilter === "Усі") {
     return [...all];
   }
@@ -126,9 +142,19 @@ export async function listEvents(statusFilter?: string): Promise<GuildEvent[]> {
 }
 
 export async function getEventById(id: string): Promise<GuildEvent | null> {
-  const all = await withMockMode(eventsStore);
+  const all = (await withMockMode(eventsStore)).map(syncMainCount);
   const found = all.find((e) => e.id === id);
   return found ?? null;
+}
+
+export async function getEventWithSquads(id: string): Promise<EventWithSquads | null> {
+  const event = await getEventById(id);
+  if (!event) return null;
+  return {
+    event,
+    mainSquad: event.registrations.filter((r) => r.status === "Основний склад"),
+    reserveSquad: event.registrations.filter((r) => r.status === "Резерв"),
+  };
 }
 
 export async function createEvent(input: CreateEventInput): Promise<GuildEvent> {
@@ -144,6 +170,7 @@ export async function createEvent(input: CreateEventInput): Promise<GuildEvent> 
     maxSlots: Number(input.maxSlots),
     status: "Набір відкрито",
     tier: "Рейд · Міфічний",
+    mainCount: 0,
     registrations: [],
   };
   eventsStore.unshift(newEvent);
@@ -186,6 +213,7 @@ export async function registerForEvent(
     status,
   };
   ev.registrations.push(reg);
+  syncMainCount(ev);
   return reg;
 }
 
@@ -198,6 +226,7 @@ export async function cancelRegistration(
   ev.registrations = ev.registrations.filter(
     (r) => r.nickname.toLowerCase() !== nickname.trim().toLowerCase()
   );
+  syncMainCount(ev);
 }
 
 export async function toggleRegistrationStatus(
@@ -209,6 +238,7 @@ export async function toggleRegistrationStatus(
   const reg = ev.registrations.find((r) => r.nickname === nickname);
   if (!reg) return;
   reg.status = reg.status === "Основний склад" ? "Резерв" : "Основний склад";
+  syncMainCount(ev);
 }
 
 export async function closeEventRecruitment(eventId: string): Promise<void> {

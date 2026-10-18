@@ -3,8 +3,11 @@ import { listMembers } from "@/lib/data/members";
 import { listEvents } from "@/lib/data/events";
 
 export default async function HomePage() {
-  const [members, events] = await Promise.all([listMembers(), listEvents()]);
-  const openEvents = events.filter((e) => e.status === "Набір відкрито");
+  const [members, events, openEvents] = await Promise.all([
+    listMembers(),
+    listEvents(),
+    listEvents("Набір відкрито"),
+  ]);
 
   if (members.length === 0 && events.length === 0) {
     return (
@@ -97,8 +100,7 @@ export default async function HomePage() {
             <div className="mt-5 flex items-center justify-between text-xs text-zinc-300">
               <span>Заповненість загону</span>
               <span className="font-bold">
-                {nextRaid.registrations.filter((r) => r.status === "Основний склад").length} /{" "}
-                {nextRaid.maxSlots}
+                {nextRaid.mainCount} / {nextRaid.maxSlots}
               </span>
             </div>
             <Link
@@ -137,7 +139,7 @@ export default async function HomePage() {
           </Link>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          {events.slice(0, 2).map((ev) => (
+          {openEvents.map((ev) => (
             <Link
               key={ev.id}
               href={`/events/${ev.id}`}
@@ -151,9 +153,7 @@ export default async function HomePage() {
               </div>
               <p className="mt-1 text-xs text-zinc-400">{ev.dateTime}</p>
               <p className="mt-3 text-xs text-zinc-300">
-                Слоти основи:{" "}
-                {ev.registrations.filter((r) => r.status === "Основний склад").length} /{" "}
-                {ev.maxSlots}
+                Слоти основи: {ev.mainCount} / {ev.maxSlots}
               </p>
             </Link>
           ))}

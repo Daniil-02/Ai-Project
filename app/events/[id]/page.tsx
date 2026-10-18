@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getEventById } from "@/lib/data/events";
+import { getEventWithSquads } from "@/lib/data/events";
 import { listCommentsByEvent } from "@/lib/data/comments";
 import {
   addCommentAction,
@@ -17,12 +17,12 @@ export default async function EventDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [event, comments] = await Promise.all([
-    getEventById(id),
+  const [details, comments] = await Promise.all([
+    getEventWithSquads(id),
     listCommentsByEvent(id),
   ]);
 
-  if (!event) {
+  if (!details) {
     return (
       <main className="mx-auto max-w-4xl px-6 py-12 text-zinc-100">
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-10 text-center">
@@ -40,8 +40,7 @@ export default async function EventDetailPage({
     );
   }
 
-  const mainSquad = event.registrations.filter((r) => r.status === "Основний склад");
-  const reserveSquad = event.registrations.filter((r) => r.status === "Резерв");
+  const { event, mainSquad, reserveSquad } = details;
   const isClosed = event.status === "Завершено";
 
   return (
@@ -84,7 +83,7 @@ export default async function EventDetailPage({
               <div>
                 <p className="text-xs text-zinc-400">Заповненість основного складу</p>
                 <p className="text-lg font-bold">
-                  {mainSquad.length} з {event.maxSlots} учасників
+                  {event.mainCount} з {event.maxSlots} учасників
                 </p>
               </div>
 

@@ -77,51 +77,46 @@ export default async function EventsPage({
         </div>
       ) : (
         <div className="space-y-4">
-          {events.map((ev) => {
-            const mainCount = ev.registrations.filter(
-              (r) => r.status === "Основний склад"
-            ).length;
-            return (
-              <div
-                key={ev.id}
-                className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6"
-              >
-                <div>
-                  <p className="text-xs uppercase text-zinc-400">{ev.tier}</p>
-                  <Link
-                    href={`/events/${ev.id}`}
-                    className="mt-1 block text-xl font-bold text-white hover:text-amber-400"
-                  >
-                    {ev.title}
-                  </Link>
-                  <p className="mt-1 text-xs text-zinc-400">{ev.dateTime}</p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <p className="text-xs text-zinc-400">Слоти</p>
-                    <p className="text-sm font-bold">
-                      {mainCount} / {ev.maxSlots}
-                    </p>
-                  </div>
-                  <span
-                    className={
-                      ev.status === "Набір відкрито"
-                        ? "rounded-full bg-emerald-950 px-3 py-1 text-xs font-medium text-emerald-400"
-                        : "rounded-full bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-400"
-                    }
-                  >
-                    {ev.status}
-                  </span>
-                  <Link
-                    href={`/events/${ev.id}`}
-                    className="rounded-xl border border-zinc-700 px-4 py-2 text-xs font-semibold hover:border-zinc-500"
-                  >
-                    Детальніше →
-                  </Link>
-                </div>
+          {events.map((ev) => (
+            <div
+              key={ev.id}
+              className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6"
+            >
+              <div>
+                <p className="text-xs uppercase text-zinc-400">{ev.tier}</p>
+                <Link
+                  href={`/events/${ev.id}`}
+                  className="mt-1 block text-xl font-bold text-white hover:text-amber-400"
+                >
+                  {ev.title}
+                </Link>
+                <p className="mt-1 text-xs text-zinc-400">{ev.dateTime}</p>
               </div>
-            );
-          })}
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <p className="text-xs text-zinc-400">Слоти</p>
+                  <p className="text-sm font-bold">
+                    {ev.mainCount} / {ev.maxSlots}
+                  </p>
+                </div>
+                <span
+                  className={
+                    ev.status === "Набір відкрито"
+                      ? "rounded-full bg-emerald-950 px-3 py-1 text-xs font-medium text-emerald-400"
+                      : "rounded-full bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-400"
+                  }
+                >
+                  {ev.status}
+                </span>
+                <Link
+                  href={`/events/${ev.id}`}
+                  className="rounded-xl border border-zinc-700 px-4 py-2 text-xs font-semibold hover:border-zinc-500"
+                >
+                  Детальніше →
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </main>
