@@ -1,46 +1,87 @@
 import Link from "next/link";
-
-const fields = [
-  { label: "Назва події", value: "Наприклад, Цитадель Попелу" },
-  { label: "Дата та час", value: "Оберіть дату і час події" },
-  { label: "Ліміт місць", value: "10 учасників" },
-];
+import { createEventAction } from "./actions";
 
 export default function NewEventPage() {
   return (
-    <main className="min-h-screen bg-[#0b1013] px-4 py-6 text-slate-100 sm:px-8 lg:px-12">
-      <div className="mx-auto max-w-4xl">
-        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300">Shadow Vanguard</p>
-            <h1 className="mt-1 text-2xl font-bold">Нова подія</h1>
-          </div>
-          <nav aria-label="Навігація" className="flex gap-3 text-sm">
-            <Link href="/events" className="rounded-lg px-3 py-2 text-slate-300 hover:bg-white/5 hover:text-white">Розклад подій</Link>
-            <Link href="/" className="rounded-lg px-3 py-2 text-slate-300 hover:bg-white/5 hover:text-white">Головна</Link>
-          </nav>
-        </header>
-        <section className="py-10">
-          <p className="text-sm text-slate-400">Заплануй наступну пригоду для свого загону.</p>
-          <div className="mt-6 space-y-5 rounded-2xl border border-white/10 bg-[#11191d] p-5 sm:p-8">
-            {fields.map((field) => (
-              <div key={field.label}>
-                <p className="mb-2 text-sm font-semibold text-slate-200">{field.label}</p>
-                <div className="rounded-xl border border-white/10 bg-[#0b1013] px-4 py-3 text-sm text-slate-500">{field.value}</div>
-              </div>
-            ))}
-            <div>
-              <p className="mb-2 text-sm font-semibold text-slate-200">Опис</p>
-              <div className="min-h-32 rounded-xl border border-white/10 bg-[#0b1013] px-4 py-3 text-sm text-slate-500">Додайте деталі рейду, вимоги до спорядження та іншу важливу інформацію…</div>
-            </div>
-            <div className="flex flex-wrap justify-end gap-3 border-t border-white/10 pt-5">
-              <Link href="/events" className="rounded-xl border border-white/10 px-5 py-3 text-sm font-semibold text-slate-300 hover:text-white">Скасувати</Link>
-              <button type="button" className="rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-slate-950 hover:bg-amber-300">Створити подію</button>
-            </div>
-            <p className="text-xs text-slate-500">Макет форми — дані не зберігаються.</p>
-          </div>
-        </section>
-      </div>
+    <main className="mx-auto max-w-3xl space-y-8 px-6 py-10 text-zinc-100">
+      <header className="flex items-center justify-between border-b border-zinc-800 pb-6">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-amber-400">
+            Shadow Vanguard · Офіцер гільдії
+          </p>
+          <h1 className="text-2xl font-bold">Нова подія</h1>
+        </div>
+        <nav className="flex items-center gap-4 text-sm">
+          <Link href="/events" className="text-zinc-300 hover:text-white">
+            Розклад подій
+          </Link>
+          <Link href="/" className="text-zinc-300 hover:text-white">
+            Головна
+          </Link>
+        </nav>
+      </header>
+
+      <form
+        action={createEventAction}
+        className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8"
+      >
+        <div>
+          <label className="block text-sm font-medium text-zinc-200">Назва події</label>
+          <input
+            name="title"
+            required
+            placeholder="Наприклад, Цитадель Попелу"
+            className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2.5 text-sm text-white"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-zinc-200">Дата та час</label>
+          <input
+            name="dateTime"
+            required
+            placeholder="Наприклад, Пт, 24 травня · 20:00"
+            className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2.5 text-sm text-white"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-zinc-200">Ліміт місць в основі</label>
+          <input
+            name="maxSlots"
+            type="number"
+            min={1}
+            defaultValue={10}
+            required
+            className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2.5 text-sm text-white"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-zinc-200">Опис цілі рейду</label>
+          <textarea
+            name="description"
+            rows={4}
+            placeholder="Вимоги до спорядження та тактика проходження..."
+            className="mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2.5 text-sm text-white"
+          />
+        </div>
+
+        <div className="flex justify-end gap-3 pt-3">
+          <Link
+            href="/events"
+            className="rounded-xl border border-zinc-700 px-5 py-2.5 text-sm font-semibold text-zinc-300"
+          >
+            Скасувати
+          </Link>
+          <button
+            type="submit"
+            className="rounded-xl bg-amber-400 px-5 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-amber-300"
+          >
+            Створити подію
+          </button>
+        </div>
+      </form>
     </main>
   );
 }
