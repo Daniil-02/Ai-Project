@@ -1,0 +1,159 @@
+
+> aidevcourse@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /workspaces/Ai-Project
+
+stderr | tests/actions-events.test.ts > точки доступу: ігрові події гільдії (ПР 5) > успішний виклик: офіцер створює подію, і вона є в базі
+Серверна дія завершилася винятком: TypeError: call is not a function
+    at submit [90m(/workspaces/Ai-Project/[39mtests/helpers/submit.ts:12:26[90m)[39m
+    at [90m/workspaces/Ai-Project/[39mtests/actions-events.test.ts:13:26
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:155:11
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:26
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:104:5)[39m
+    at runSuite [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1729:8[90m)[39m
+
+stderr | tests/actions-events.test.ts > точки доступу: ігрові події гільдії (ПР 5) > невалідні дані: порожня назва повз форму відхиляється з кодом 400
+Серверна дія завершилася винятком: TypeError: call is not a function
+    at submit [90m(/workspaces/Ai-Project/[39mtests/helpers/submit.ts:12:26[90m)[39m
+    at [90m/workspaces/Ai-Project/[39mtests/actions-events.test.ts:26:26
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:155:11
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:26
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:104:5)[39m
+    at runSuite [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1729:8[90m)[39m
+
+stderr | tests/actions-events.test.ts > точки доступу: ігрові події гільдії (ПР 5) > невалідні дані: некоректний ліміт місць повз форму відхиляється з кодом 400
+Серверна дія завершилася винятком: TypeError: call is not a function
+    at submit [90m(/workspaces/Ai-Project/[39mtests/helpers/submit.ts:12:26[90m)[39m
+    at [90m/workspaces/Ai-Project/[39mtests/actions-events.test.ts:37:26
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:155:11
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:26
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:104:5)[39m
+    at runSuite [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1729:8[90m)[39m
+
+stderr | tests/actions-events.test.ts > точки доступу: ігрові події гільдії (ПР 5) > чужий запис: акаунт Б не бачить і не видаляє подію акаунта А
+Серверна дія завершилася винятком: TypeError: call is not a function
+    at submit [90m(/workspaces/Ai-Project/[39mtests/helpers/submit.ts:12:26[90m)[39m
+    at [90m/workspaces/Ai-Project/[39mtests/actions-events.test.ts:48:27
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:155:11
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:26
+    at [90mfile:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:104:5)[39m
+    at runSuite [90m(file:///workspaces/Ai-Project/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1729:8[90m)[39m
+
+ ❯ tests/actions-events.test.ts (4 tests | 4 failed) 396ms
+   × точки доступу: ігрові події гільдії (ПР 5) > успішний виклик: офіцер створює подію, і вона є в базі 388ms
+     → expected +0 to be 201 // Object.is equality
+   × точки доступу: ігрові події гільдії (ПР 5) > невалідні дані: порожня назва повз форму відхиляється з кодом 400 3ms
+     → expected +0 to be 400 // Object.is equality
+   × точки доступу: ігрові події гільдії (ПР 5) > невалідні дані: некоректний ліміт місць повз форму відхиляється з кодом 400 3ms
+     → expected +0 to be 400 // Object.is equality
+   × точки доступу: ігрові події гільдії (ПР 5) > чужий запис: акаунт Б не бачить і не видаляє подію акаунта А 1ms
+     → expected +0 to be 201 // Object.is equality
+ ✓ tests/db-events.test.ts (4 tests) 1853ms
+   ✓ Операції над подіями гільдії в базі даних Supabase (ПР 4) > створений запис читається назад: створена подія знаходиться в базі за id  898ms
+   ✓ Операції над подіями гільдії в базі даних Supabase (ПР 4) > видалений запис не знаходиться: видалення події прибирає її з бази  331ms
+   ✓ Операції над подіями гільдії в базі даних Supabase (ПР 4) > зв'язок багато до багатьох: запис учасника на подію зберігається у таблиці зв'язку  621ms
+ ✓ tests/guild.test.ts (5 tests) 200ms
+ ✓ tests/smoke.test.ts (1 test) 278ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/actions-events.test.ts > точки доступу: ігрові події гільдії (ПР 5) > успішний виклик: офіцер створює подію, і вона є в базі
+AssertionError: expected +0 to be 201 // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 201[39m
+[31m+ 0[39m
+
+ ❯ tests/actions-events.test.ts:19:27
+     17|       description: "Тестовий міфічний рейд для перевірки точки створен…
+     18|     });
+     19|     expect(result.status).toBe(201);
+       |                           ^
+     20|     expect(result.id).toBeTruthy();
+     21|     expect(await getEventById(result.id ?? "")).not.toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/actions-events.test.ts > точки доступу: ігрові події гільдії (ПР 5) > невалідні дані: порожня назва повз форму відхиляється з кодом 400
+AssertionError: expected +0 to be 400 // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 400[39m
+[31m+ 0[39m
+
+ ❯ tests/actions-events.test.ts:32:27
+     30|       description: "Опис події без назви",
+     31|     });
+     32|     expect(result.status).toBe(400);
+       |                           ^
+     33|     expect(result.fieldErrors?.title).toBeTruthy();
+     34|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/actions-events.test.ts > точки доступу: ігрові події гільдії (ПР 5) > невалідні дані: некоректний ліміт місць повз форму відхиляється з кодом 400
+AssertionError: expected +0 to be 400 // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 400[39m
+[31m+ 0[39m
+
+ ❯ tests/actions-events.test.ts:43:27
+     41|       description: "Опис події з нульовим лімітом місць",
+     42|     });
+     43|     expect(result.status).toBe(400);
+       |                           ^
+     44|     expect(result.fieldErrors?.maxSlots).toBeTruthy();
+     45|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/actions-events.test.ts > точки доступу: ігрові події гільдії (ПР 5) > чужий запис: акаунт Б не бачить і не видаляє подію акаунта А
+AssertionError: expected +0 to be 201 // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 201[39m
+[31m+ 0[39m
+
+ ❯ tests/actions-events.test.ts:54:28
+     52|       description: "Подія акаунта А",
+     53|     });
+     54|     expect(created.status).toBe(201);
+       |                            ^
+     55|     try {
+     56|       await signInAs("B");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  4 failed | 10 passed (14)
+   Start at  11:47:55
+   Duration  4.15s (transform 125ms, setup 390ms, collect 125ms, tests 2.73s, environment 1ms, prepare 269ms)
+
