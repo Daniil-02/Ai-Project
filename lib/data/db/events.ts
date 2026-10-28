@@ -115,9 +115,10 @@ export async function createEvent(input: CreateEventInput): Promise<GuildEvent> 
   return toEvent(data as EventRow, []);
 }
 
-export async function deleteEvent(id: string): Promise<void> {
-  const { error } = await db().from("events").delete().eq("id", id);
+export async function deleteEvent(id: string): Promise<boolean> {
+  const { data, error } = await db().from("events").delete().eq("id", id).select("id");
   if (error) throw new Error(error.message);
+  return (data?.length ?? 0) > 0;
 }
 
 export async function registerForEvent(
@@ -182,56 +183,62 @@ export async function registerForEvent(
 export async function cancelRegistration(
   eventId: string,
   nickname: string
-): Promise<void> {
+): Promise<boolean> {
   const { data: profile } = await db()
     .from("profiles")
     .select("id")
     .eq("nickname", nickname.trim())
     .maybeSingle();
-  if (!profile) return;
+  if (!profile) return false;
 
-  const { error } = await db()
+  const { data, error } = await db()
     .from("event_registrations")
     .delete()
     .eq("event_id", eventId)
-    .eq("profile_id", profile.id);
+    .eq("profile_id", profile.id)
+    .select("event_id");
   if (error) throw new Error(error.message);
+  return (data?.length ?? 0) > 0;
 }
 
 export async function toggleRegistrationStatus(
   eventId: string,
   nickname: string
-): Promise<void> {
+): Promise<boolean> {
   const { data: profile } = await db()
     .from("profiles")
     .select("id")
     .eq("nickname", nickname.trim())
     .maybeSingle();
-  if (!profile) return;
+  if (!profile) return false;
 
   const { data: reg } = await db()
     .from("event_registrations")
     .select("slot_status")
     .eq("event_id", eventId)
     .eq("profile_id", profile.id)
-    .single();
+    .maybeSingle();
 
-  if (!reg) return;
+  if (!reg) return false;
   const newStatus =
     reg.slot_status === "Основний склад" ? "Резерв" : "Основний склад";
 
-  const { error } = await db()
+  const { data, error } = await db()
     .from("event_registrations")
     .update({ slot_status: newStatus })
     .eq("event_id", eventId)
-    .eq("profile_id", profile.id);
+    .eq("profile_id", profile.id)
+    .select("event_id");
   if (error) throw new Error(error.message);
+  return (data?.length ?? 0) > 0;
 }
 
-export async function closeEventRecruitment(eventId: string): Promise<void> {
-  const { error } = await db()
+export async function closeEventRecruitment(eventId: string): Promise<boolean> {
+  const { data, error } = await db()
     .from("events")
     .update({ status: "Завершено" })
-    .eq("id", eventId);
+    .eq("id", eventId)
+    .select("id");
   if (error) throw new Error(error.message);
+  return (data?.length ?? 0) > 0;
 }

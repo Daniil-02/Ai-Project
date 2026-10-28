@@ -1,0 +1,58 @@
+
+> aidevcourse@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /workspaces/Ai-Project
+
+ ❯ tests/actions-events.test.ts (4 tests | 1 failed) 2075ms
+   ✓ точки доступу: ігрові події гільдії (ПР 5) > успішний виклик: офіцер створює подію, і вона є в базі  1354ms
+   ✓ точки доступу: ігрові події гільдії (ПР 5) > невалідні дані: порожня назва повз форму відхиляється з кодом 400 100ms
+   ✓ точки доступу: ігрові події гільдії (ПР 5) > невалідні дані: некоректний ліміт місць повз форму відхиляється з кодом 400 42ms
+   × точки доступу: ігрові події гільдії (ПР 5) > чужий запис: акаунт Б не бачить і не видаляє подію акаунта А 577ms
+     → expected { …(9) } to be null
+ ✓ tests/db-events.test.ts (4 tests) 2092ms
+   ✓ Операції над подіями гільдії в базі даних Supabase (ПР 4) > створений запис читається назад: створена подія знаходиться в базі за id  1064ms
+   ✓ Операції над подіями гільдії в базі даних Supabase (ПР 4) > видалений запис не знаходиться: видалення події прибирає її з бази  430ms
+   ✓ Операції над подіями гільдії в базі даних Supabase (ПР 4) > зв'язок багато до багатьох: запис учасника на подію зберігається у таблиці зв'язку  594ms
+ ✓ tests/guild.test.ts (5 tests) 280ms
+ ✓ tests/smoke.test.ts (1 test) 317ms
+   ✓ project setup > runs a basic Vitest test  315ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/actions-events.test.ts > точки доступу: ігрові події гільдії (ПР 5) > чужий запис: акаунт Б не бачить і не видаляє подію акаунта А
+AssertionError: expected { …(9) } to be null
+
+[32m- Expected:[39m 
+null
+
+[31m+ Received:[39m 
+{
+  "dateTime": "2026-11-15 20:00",
+  "description": "Подія акаунта А",
+  "id": "6d1bf56e-3554-4000-acf5-c652980a44b3",
+  "mainCount": 0,
+  "maxSlots": 10,
+  "registrations": [],
+  "status": "Набір відкрито",
+  "tier": "Рейд · Міфічний",
+  "title": "тест-чужий-1793196512154",
+}
+
+ ❯ tests/actions-events.test.ts:57:52
+     55|     try {
+     56|       await signInAs("B");
+     57|       expect(await getEventById(created.id ?? "")).toBeNull();
+       |                                                    ^
+     58|       expect((await submit(deleteEventAction, { id: created.id ?? "" }…
+     59|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 13 passed (14)
+   Start at  14:08:30
+   Duration  6.13s (transform 185ms, setup 336ms, collect 201ms, tests 4.76s, environment 1ms, prepare 262ms)
+

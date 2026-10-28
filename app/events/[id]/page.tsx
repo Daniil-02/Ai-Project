@@ -1,3 +1,4 @@
+import { ActionForm } from "@/components/action-form";
 import Link from "next/link";
 import { getEventWithSquads } from "@/lib/data/events";
 import { listCommentsByEvent } from "@/lib/data/comments";
@@ -88,7 +89,7 @@ export default async function EventDetailPage({
               </div>
 
               {!isClosed && (
-                <form action={registerAction} className="flex flex-wrap items-center gap-2">
+                <ActionForm action={registerAction} className="flex flex-wrap items-center gap-2">
                   <input type="hidden" name="eventId" value={event.id} />
                   <input
                     name="nickname"
@@ -110,12 +111,12 @@ export default async function EventDetailPage({
                   >
                     Записатися на рейд
                   </button>
-                </form>
+                </ActionForm>
               )}
             </div>
 
             {!isClosed && (
-              <form action={closeRecruitmentAction} className="mt-4 flex justify-end">
+              <ActionForm action={closeRecruitmentAction} className="mt-4 flex justify-end">
                 <input type="hidden" name="eventId" value={event.id} />
                 <button
                   type="submit"
@@ -123,7 +124,7 @@ export default async function EventDetailPage({
                 >
                   Завершити набір (Офіцер)
                 </button>
-              </form>
+              </ActionForm>
             )}
           </section>
 
@@ -143,7 +144,7 @@ export default async function EventDetailPage({
                     </div>
                     {!isClosed && (
                       <div className="flex gap-2">
-                        <form action={toggleSlotAction}>
+                        <ActionForm action={toggleSlotAction}>
                           <input type="hidden" name="eventId" value={event.id} />
                           <input type="hidden" name="nickname" value={r.nickname} />
                           <button
@@ -152,8 +153,8 @@ export default async function EventDetailPage({
                           >
                             У резерв
                           </button>
-                        </form>
-                        <form action={cancelRegistrationAction}>
+                        </ActionForm>
+                        <ActionForm action={cancelRegistrationAction}>
                           <input type="hidden" name="eventId" value={event.id} />
                           <input type="hidden" name="nickname" value={r.nickname} />
                           <button
@@ -162,7 +163,7 @@ export default async function EventDetailPage({
                           >
                             Скасувати заявку
                           </button>
-                        </form>
+                        </ActionForm>
                       </div>
                     )}
                   </li>
@@ -186,7 +187,7 @@ export default async function EventDetailPage({
                     </div>
                     {!isClosed && (
                       <div className="flex gap-2">
-                        <form action={toggleSlotAction}>
+                        <ActionForm action={toggleSlotAction}>
                           <input type="hidden" name="eventId" value={event.id} />
                           <input type="hidden" name="nickname" value={r.nickname} />
                           <button
@@ -195,8 +196,8 @@ export default async function EventDetailPage({
                           >
                             В основу
                           </button>
-                        </form>
-                        <form action={cancelRegistrationAction}>
+                        </ActionForm>
+                        <ActionForm action={cancelRegistrationAction}>
                           <input type="hidden" name="eventId" value={event.id} />
                           <input type="hidden" name="nickname" value={r.nickname} />
                           <button
@@ -205,7 +206,7 @@ export default async function EventDetailPage({
                           >
                             Скасувати заявку
                           </button>
-                        </form>
+                        </ActionForm>
                       </div>
                     )}
                   </li>
@@ -239,27 +240,27 @@ export default async function EventDetailPage({
                 )}
                 {!c.isHidden && (
                   <div className="mt-3 flex gap-3 text-xs text-zinc-400">
-                    <form action={reportCommentAction}>
+                    <ActionForm action={reportCommentAction}>
                       <input type="hidden" name="eventId" value={event.id} />
                       <input type="hidden" name="commentId" value={c.id} />
                       <button type="submit" className="hover:text-amber-400">
                         Поскаржитися
                       </button>
-                    </form>
-                    <form action={hideCommentAction}>
+                    </ActionForm>
+                    <ActionForm action={hideCommentAction}>
                       <input type="hidden" name="eventId" value={event.id} />
                       <input type="hidden" name="commentId" value={c.id} />
                       <button type="submit" className="hover:text-red-400">
                         Приховати
                       </button>
-                    </form>
+                    </ActionForm>
                   </div>
                 )}
               </div>
             ))}
           </div>
 
-          <form action={addCommentAction} className="space-y-3 pt-2">
+          <ActionForm action={addCommentAction} className="space-y-3 pt-2">
             <input type="hidden" name="eventId" value={event.id} />
             <input
               name="author"
@@ -279,7 +280,7 @@ export default async function EventDetailPage({
             >
               Надіслати
             </button>
-          </form>
+          </ActionForm>
         </section>
       </div>
     </main>
