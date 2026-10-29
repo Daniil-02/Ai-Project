@@ -1,3 +1,4 @@
+import { LiveRefresh } from "@/components/live-refresh";
 import { ActionForm } from "@/components/action-form";
 import Link from "next/link";
 import { getEventWithSquads } from "@/lib/data/events";
@@ -26,6 +27,7 @@ export default async function EventDetailPage({
   if (!details) {
     return (
       <main className="mx-auto max-w-4xl px-6 py-12 text-zinc-100">
+      <LiveRefresh table="event_registrations" />
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-10 text-center">
           <h1 className="text-xl font-bold">
             Подію не знайдено або до неї ще немає жодної заявки й коментаря
