@@ -14,6 +14,7 @@ import {
   buildCacheKey,
   buildUserMessage,
   checkTacticsReply,
+  NOTE_MAX,
   normalizeNote,
   SYSTEM_PROMPT,
   TACTICS_SCHEMA,
@@ -34,6 +35,13 @@ export async function generateTacticsAction(_previous: ActionResult | null, form
   const note = String(formData.get("note") ?? "").trim();
   if (!eventId || !note) {
     return { status: 400, message: "Введіть нотатку для тактичного плану.", fieldErrors: { note: "Нотатка обов'язкова." } };
+  }
+  if (note.length > NOTE_MAX) {
+    return {
+      status: 400,
+      message: "Перевірте поля форми.",
+      fieldErrors: { note: `Нотатка не повинна перевищувати ${NOTE_MAX} символів.` },
+    };
   }
 
   const data = await getEventWithSquads(eventId);
