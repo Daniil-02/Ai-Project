@@ -17,6 +17,7 @@ type EventRow = {
   max_slots: number;
   status: string;
   tier: string;
+  ai_tactics?: string | null;
 };
 
 type RegRow = {
@@ -40,6 +41,7 @@ function toEvent(row: EventRow, regs: EventRegistration[] = []): GuildEvent {
     maxSlots: row.max_slots,
     status: row.status as EventStatus,
     tier: row.tier,
+    aiTactics: row.ai_tactics ?? null,
     mainCount,
     registrations: regs,
   };
@@ -237,6 +239,16 @@ export async function closeEventRecruitment(eventId: string): Promise<boolean> {
   const { data, error } = await db()
     .from("events")
     .update({ status: "Завершено" })
+    .eq("id", eventId)
+    .select("id");
+  if (error) throw new Error(error.message);
+  return (data?.length ?? 0) > 0;
+}
+
+export async function updateEventAiTactics(eventId: string, aiTactics: string): Promise<boolean> {
+  const { data, error } = await db()
+    .from("events")
+    .update({ ai_tactics: aiTactics })
     .eq("id", eventId)
     .select("id");
   if (error) throw new Error(error.message);

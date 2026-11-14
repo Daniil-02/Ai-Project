@@ -20,6 +20,7 @@ export interface GuildEvent {
   description: string;
   status: EventStatus;
   tier: string;
+  aiTactics?: string | null;
   mainCount: number;
   registrations: EventRegistration[];
 }
@@ -47,4 +48,5 @@ export {
   cancelRegistration,
   toggleRegistrationStatus,
   closeEventRecruitment,
+  updateEventAiTactics,
 } from "./db/events";
