@@ -1,11 +1,19 @@
 "use server";
 
-// Наївна версія функції на базі моделі: генерація тактичного плану рейду (ПР 6, крок 4).
 import { revalidatePath } from "next/cache";
 import { isAccessDenied, type ActionResult } from "@/lib/action-result";
 import { askModel } from "@/lib/ai/model";
+import {
+  buildUserMessage,
+  checkTacticsReply,
+  SYSTEM_PROMPT,
+  TACTICS_SCHEMA,
+  type RaidTactics,
+} from "@/lib/ai/raid-tactics";
 import { currentUserId } from "@/lib/auth";
 import { getEventWithSquads, updateEventAiTactics } from "@/lib/data/db/events";
+
+const UNAVAILABLE = "Генерація тактики зараз недоступна. Складіть план рейду вручну або спробуйте пізніше.";
 
 export async function generateTacticsAction(_previous: ActionResult | null, formData: FormData): Promise<ActionResult> {
   if (!(await currentUserId())) {
@@ -28,31 +36,31 @@ export async function generateTacticsAction(_previous: ActionResult | null, form
       ? data.mainSquad.map((m, i) => `${i + 1}. ${m.nickname} (${m.role})`).join(", ")
       : "Склад ще формується";
 
-  const prompt = [
-    `Ти тактик ігрової гільдії Shadow Vanguard. Склади короткий тактичний план для рейду "${data.event.title}" (${data.event.tier}).`,
-    `Склад загону: ${squadText}.`,
-    `Побажання офіцера: ${note}`,
-    `Поверни відповідь строго у форматі JSON без markdown: {"summary": "загальний план", "tanks": "задача танків", "healers": "задача хілерів", "dps": "задача ДПС"}`,
-  ].join("\n");
+  const userMessage = buildUserMessage(data.event.title, data.event.tier, data.event.maxSlots, squadText, note);
 
-  const reply = await askModel({
-    system: "",
-    user: prompt,
-  });
+  let validTactics: RaidTactics | null = null;
+  for (let attempt = 1; attempt <= 2 && !validTactics; attempt++) {
+    const reply = await askModel({
+      system: SYSTEM_PROMPT,
+      user: userMessage,
+      jsonSchema: TACTICS_SCHEMA,
+    });
+    const checked = checkTacticsReply(reply.text, data.event.maxSlots);
+    if (checked.ok) {
+      validTactics = checked.value;
+    }
+  }
 
-  const cleanJson = reply.text.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
-  const parsed = JSON.parse(cleanJson) as {
-    summary: string;
-    tanks: string;
-    healers: string;
-    dps: string;
-  };
+  if (!validTactics) {
+    return { status: 503, message: "Модель повернула відповідь у невірному форматі. " + UNAVAILABLE };
+  }
 
   const formattedTactics = [
-    `Загальний план: ${parsed.summary}`,
-    `Танки: ${parsed.tanks}`,
-    `Хілери: ${parsed.healers}`,
-    `ДПС: ${parsed.dps}`,
+    `Загальний план: ${validTactics.summary}`,
+    `Танки: ${validTactics.tanks}`,
+    `Хілери: ${validTactics.healers}`,
+    `ДПС: ${validTactics.dps}`,
+    `Пріоритетний слот підтримки: №${validTactics.prioritySlot}`,
   ].join("\n");
 
   try {
