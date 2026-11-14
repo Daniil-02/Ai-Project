@@ -2,17 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 import { isAccessDenied, type ActionResult } from "@/lib/action-result";
-import { aiLimits } from "@/lib/ai/limits";
+import { aiLimits, CACHE_TTL_SECONDS } from "@/lib/ai/limits";
 import { askModel } from "@/lib/ai/model";
 import {
+  buildCacheKey,
   buildUserMessage,
   checkTacticsReply,
+  normalizeNote,
   SYSTEM_PROMPT,
   TACTICS_SCHEMA,
   type RaidTactics,
 } from "@/lib/ai/raid-tactics";
 import { currentUserId } from "@/lib/auth";
-import { appCallsToday, countMyCallsSince, recordCall } from "@/lib/data/db/ai-guard";
+import { appCallsToday, countMyCallsSince, readCache, recordCall, writeCache } from "@/lib/data/db/ai-guard";
 import { getEventWithSquads, updateEventAiTactics } from "@/lib/data/db/events";
 
 const UNAVAILABLE = "Генерація тактики зараз недоступна. Складіть план рейду вручну або спробуйте пізніше.";
@@ -33,39 +35,59 @@ export async function generateTacticsAction(_previous: ActionResult | null, form
     return { status: 404, message: "Подію не знайдено." };
   }
 
-  const limits = aiLimits();
-  const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  if (limits.perUserPerHour <= 0 || (await countMyCallsSince(hourAgo)) >= limits.perUserPerHour) {
-    return {
-      status: 429,
-      message: `Досягнуто ліміт: не більше ${limits.perUserPerHour} генерацій тактики на годину. Спробуйте пізніше.`,
-    };
-  }
-  if (limits.appPerDay <= 0 || (await appCallsToday()) >= limits.appPerDay) {
-    return {
-      status: 429,
-      message: "Денний ліміт викликів моделі для застосунку вичерпано. Спробуйте завтра.",
-    };
-  }
-
   const squadText =
     data.mainSquad.length > 0
       ? data.mainSquad.map((m, i) => `${i + 1}. ${m.nickname} (${m.role})`).join(", ")
       : "Склад ще формується";
 
   const userMessage = buildUserMessage(data.event.title, data.event.tier, data.event.maxSlots, squadText, note);
+  const normalizedMsg = buildUserMessage(
+    data.event.title,
+    data.event.tier,
+    data.event.maxSlots,
+    squadText,
+    normalizeNote(note),
+  );
+  const key = buildCacheKey(normalizedMsg);
 
   let validTactics: RaidTactics | null = null;
-  for (let attempt = 1; attempt <= 2 && !validTactics; attempt++) {
-    await recordCall(false);
-    const reply = await askModel({
-      system: SYSTEM_PROMPT,
-      user: userMessage,
-      jsonSchema: TACTICS_SCHEMA,
-    });
-    const checked = checkTacticsReply(reply.text, data.event.maxSlots);
+  const cachedReply = await readCache(key);
+  if (cachedReply) {
+    const checked = checkTacticsReply(cachedReply, data.event.maxSlots);
     if (checked.ok) {
       validTactics = checked.value;
+      await recordCall(true);
+    }
+  }
+
+  if (!validTactics) {
+    const limits = aiLimits();
+    const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    if (limits.perUserPerHour <= 0 || (await countMyCallsSince(hourAgo)) >= limits.perUserPerHour) {
+      return {
+        status: 429,
+        message: `Досягнуто ліміт: не більше ${limits.perUserPerHour} генерацій тактики на годину. Спробуйте пізніше.`,
+      };
+    }
+    if (limits.appPerDay <= 0 || (await appCallsToday()) >= limits.appPerDay) {
+      return {
+        status: 429,
+        message: "Денний ліміт викликів моделі для застосунку вичерпано. Спробуйте завтра.",
+      };
+    }
+
+    for (let attempt = 1; attempt <= 2 && !validTactics; attempt++) {
+      await recordCall(false);
+      const reply = await askModel({
+        system: SYSTEM_PROMPT,
+        user: userMessage,
+        jsonSchema: TACTICS_SCHEMA,
+      });
+      const checked = checkTacticsReply(reply.text, data.event.maxSlots);
+      if (checked.ok) {
+        validTactics = checked.value;
+        await writeCache(key, reply.text, CACHE_TTL_SECONDS);
+      }
     }
   }
 
