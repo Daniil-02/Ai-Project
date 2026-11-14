@@ -2,8 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { isAccessDenied, type ActionResult } from "@/lib/action-result";
-import { aiLimits, CACHE_TTL_SECONDS } from "@/lib/ai/limits";
-import { askModel } from "@/lib/ai/model";
+import { aiLimits, CACHE_TTL_SECONDS, MODEL_TIMEOUT_MS } from "@/lib/ai/limits";
+import {
+  askModel,
+  modelConfigured,
+  ModelNotConfiguredError,
+  ModelTimeoutError,
+  ModelUnavailableError,
+} from "@/lib/ai/model";
 import {
   buildCacheKey,
   buildUserMessage,
@@ -33,6 +39,10 @@ export async function generateTacticsAction(_previous: ActionResult | null, form
   const data = await getEventWithSquads(eventId);
   if (!data) {
     return { status: 404, message: "Подію не знайдено." };
+  }
+
+  if (!modelConfigured()) {
+    return { status: 503, message: UNAVAILABLE };
   }
 
   const squadText =
@@ -77,16 +87,27 @@ export async function generateTacticsAction(_previous: ActionResult | null, form
     }
 
     for (let attempt = 1; attempt <= 2 && !validTactics; attempt++) {
-      await recordCall(false);
-      const reply = await askModel({
-        system: SYSTEM_PROMPT,
-        user: userMessage,
-        jsonSchema: TACTICS_SCHEMA,
-      });
-      const checked = checkTacticsReply(reply.text, data.event.maxSlots);
-      if (checked.ok) {
-        validTactics = checked.value;
-        await writeCache(key, reply.text, CACHE_TTL_SECONDS);
+      try {
+        await recordCall(false);
+        const reply = await askModel({
+          system: SYSTEM_PROMPT,
+          user: userMessage,
+          jsonSchema: TACTICS_SCHEMA,
+          timeoutMs: MODEL_TIMEOUT_MS,
+        });
+        const checked = checkTacticsReply(reply.text, data.event.maxSlots);
+        if (checked.ok) {
+          validTactics = checked.value;
+          await writeCache(key, reply.text, CACHE_TTL_SECONDS);
+        }
+      } catch (error) {
+        if (error instanceof ModelTimeoutError) {
+          return { status: 503, message: "Модель не відповіла вчасно. " + UNAVAILABLE };
+        }
+        if (error instanceof ModelUnavailableError || error instanceof ModelNotConfiguredError) {
+          return { status: 503, message: "Сервіс моделі недоступний. " + UNAVAILABLE };
+        }
+        throw error;
       }
     }
   }

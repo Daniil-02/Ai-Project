@@ -1,4 +1,4 @@
-import { generateTacticsAction } from "./ai-actions";
+import { modelConfigured } from "@/lib/ai/model";
 import { generateTacticsAction } from "./ai-actions";
 import { LiveRefresh } from "@/components/live-refresh";
 import { ActionForm } from "@/components/action-form";
@@ -59,19 +59,26 @@ export default async function EventDetailPage({
             Тактичний план ще не сформовано. Опишіть фази бою або особливості боса нижче.
           </p>
         )}
-        <ActionForm action={generateTacticsAction} className="space-y-3">
-          <input type="hidden" name="eventId" value={event.id} />
-          <textarea
-            name="note"
-            rows={2}
-            required
-            placeholder="Наприклад: Бос на 2-й фазі кидає вогняні хвилі, потрібно 2 танки та розсередження"
-            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
-          />
-          <button className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-amber-400 transition-colors">
-            Згенерувати тактику ШІ
-          </button>
-        </ActionForm>
+        {modelConfigured() ? (
+          <ActionForm action={generateTacticsAction} className="space-y-3">
+            <input type="hidden" name="eventId" value={event.id} />
+            <textarea
+              name="note"
+              rows={2}
+              required
+              maxLength={500}
+              placeholder="Наприклад: Бос на 2-й фазі кидає вогняні хвилі, потрібно 2 танки та розсередження"
+              className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
+            />
+            <button className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-amber-400 transition-colors">
+              Згенерувати тактику ШІ
+            </button>
+          </ActionForm>
+        ) : (
+          <p className="rounded-lg border border-zinc-800 bg-zinc-950/60 p-3 text-sm text-zinc-400">
+            Генерація тактики ШІ тимчасово недоступна (не задано ключ провайдера). Решта функцій рейду працює у звичайному режимі.
+          </p>
+        )}
       </section>
 
     </main>
